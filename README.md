@@ -20,10 +20,10 @@ curl -fsSL https://raw.githubusercontent.com/buyi06/argotunnel_pro/main/argotunn
 chmod +x argotunnel_pro.sh
 ```
 
-### 2. 运行安装
+### 2. 一键安装
 
 ```bash
-sudo ./argotunnel_pro.sh
+curl -fsSL https://raw.githubusercontent.com/buyi06/argotunnel_pro/main/argotunnel_pro.sh | sudo bash
 ```
 
 脚本会引导你：
