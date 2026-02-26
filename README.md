@@ -81,7 +81,7 @@ sudo ./argotunnel_pro.sh
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
 | `DOMAIN` | - | 必填，你的域名 |
-| `XRAY_PROTOCOL` | `vmess` | 协议：`vmess` 或 `vless` |
+| `XRAY_PROTOCOL` | `vless` | 协议：`vmess` 或 `vless` |
 | `TUNNEL_NAME` | 从域名生成 | Tunnel 名称 |
 | `EDGE_IP_VERSION` | `auto` | CF 边缘 IP 版本：`auto`/`4`/`6` |
 | `CF_PROTOCOL` | `auto` | CF 连接协议：`auto`/`quic`/`http2` |
