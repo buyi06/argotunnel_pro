@@ -28,16 +28,33 @@ sudo chmod +x argotunnel_pro.sh
 sudo ./argotunnel_pro.sh
 ```
 
-或者直接下载并执行：
+### 2. 运行脚本（交互式菜单）
+
+```bash
+sudo ./argotunnel_pro.sh
+```
+
+脚本会显示管理菜单，选择对应操作：
+- 1 - 安装/重装服务
+- 2 - 查看服务状态
+- 3 - 查看节点链接
+- 4 - 卸载服务
+- 5 - 退出
+
+### 3. 直接命令（无菜单）
+
+```bash
+sudo ./argotunnel_pro.sh install   # 安装
+sudo ./argotunnel_pro.sh status    # 查看状态
+sudo ./argotunnel_pro.sh links     # 查看链接
+sudo ./argotunnel_pro.sh uninstall # 卸载
+```
+
+### 4. 在线执行
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/buyi06/argotunnel_pro/main/argotunnel_pro.sh)
 ```
-
-脚本会引导你：
-- 设置域名（必须有）
-- 选择协议（VLESS/VMess）
-- 自动配置 tunnel 和代理
 
 ### 3. 获取配置
 
@@ -89,15 +106,24 @@ sudo ./argotunnel_pro.sh
 ## 命令行选项
 
 ```bash
-sudo ./argotunnel_pro.sh [选项]
+sudo ./argotunnel_pro.sh [命令]
 ```
+
+### 可用命令
+
+- `install` - 安装/重装服务
+- `status` - 查看服务状态
+- `links` - 查看节点链接
+- `uninstall` - 卸载服务
+- `menu` - 显示交互式菜单（默认）
+- `help` - 显示帮助信息
 
 ### 主要功能
 
-- **安装**：默认行为，完整安装服务
-- **卸载**：`sudo ./argotunnel_pro.sh uninstall`
-- **重装**：先卸载再安装
-- **更新**：更新 cloudflared 和 xray
+- **安装**：完整安装并配置服务
+- **卸载**：清理所有相关文件和服务
+- **状态查看**：实时查看服务运行状态
+- **链接管理**：获取和查看客户端配置
 
 ### 查看状态
 

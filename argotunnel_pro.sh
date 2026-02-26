@@ -614,13 +614,76 @@ usage() {
 EOF
 }
 
+show_menu() {
+  clear
+  echo "=================================="
+  echo "   ArgoTunnel Pro 管理菜单"
+  echo "=================================="
+  echo
+  echo "1. 安装/重装服务"
+  echo "2. 查看服务状态"
+  echo "3. 查看节点链接"
+  echo "4. 卸载服务"
+  echo "5. 退出"
+  echo
+  echo -n "请选择操作 [1-5]: "
+}
+
+handle_menu() {
+  while true; do
+    show_menu
+    read -r choice
+    echo
+    
+    case "$choice" in
+      1)
+        do_install
+        echo
+        echo "按回车键继续..."
+        read -r
+        ;;
+      2)
+        do_status
+        echo
+        echo "按回车键继续..."
+        read -r
+        ;;
+      3)
+        do_links
+        echo
+        echo "按回车键继续..."
+        read -r
+        ;;
+      4)
+        echo "确定要卸载吗？(y/N)"
+        read -r confirm
+        if [[ "$confirm" =~ ^[Yy]$ ]]; then
+          do_uninstall
+        fi
+        echo
+        echo "按回车键继续..."
+        read -r
+        ;;
+      5)
+        echo "退出..."
+        exit 0
+        ;;
+      *)
+        echo "无效选择，请输入 1-5"
+        sleep 1
+        ;;
+    esac
+  done
+}
+
 main() {
-  local cmd="${1:-install}"
+  local cmd="${1:-menu}"
   case "$cmd" in
     install)   do_install ;;
     uninstall) do_uninstall ;;
     status)    do_status ;;
     links)     do_links ;;
+    menu)      handle_menu ;;
     -h|--help|help) usage ;;
     *)
       usage
