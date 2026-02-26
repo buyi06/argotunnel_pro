@@ -339,9 +339,14 @@ ensure_cloudflared_login() {
 
 prompt_if_empty() {
   if [[ -z "$DOMAIN" ]]; then
-    echo
-    echo "请输入要绑定的完整二级域名，例如：app.example.com"
-    read -r -p "DOMAIN: " DOMAIN
+    # 检查是否为管道模式（非交互式）
+    if [[ -t 0 ]]; then
+      echo
+      echo "请输入要绑定的完整二级域名，例如：app.example.com"
+      read -r -p "DOMAIN: " DOMAIN
+    else
+      die "非交互式模式下请设置 DOMAIN 环境变量，例如：\n  curl ... | sudo DOMAIN=your.domain.com bash"
+    fi
   fi
   [[ -n "$DOMAIN" ]] || die "DOMAIN 不能为空"
   [[ "$DOMAIN" == *.* ]] || die "DOMAIN 格式不正确（需要包含点号）：$DOMAIN"
