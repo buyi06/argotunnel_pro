@@ -554,9 +554,6 @@ do_install() {
   ensure_deps
   ensure_cloudflared
   install_xray
-
-  # 先检查认证，避免在输入域名后才发现需要登录
-  ensure_cloudflared_login
   
   prompt_if_empty
 
