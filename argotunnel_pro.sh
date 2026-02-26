@@ -324,34 +324,24 @@ EOF
 }
 
 ensure_cloudflared_login() {
-  # 使用全局变量标记认证状态，避免重复检查
-  [[ "${CLOUDFLARE_AUTH_CHECKED:-0}" == "1" ]] && return 0
-  
   # locally-managed tunnel 需要 cert.pem。Cloudflare 默认路径 ~/.cloudflared/cert.pem
   local cert="${HOME}/.cloudflared/cert.pem"
   local cred_dir="${HOME}/.cloudflared"
   
-  # 检查证书文件是否存在
-  if [[ ! -s "$cert" ]]; then
-    warn "未找到认证证书：$cert"
-    warn "需要登录 Cloudflare（请准备浏览器）"
-    do_login "$cert" "$cred_dir"
-    export CLOUDFLARE_AUTH_CHECKED=1
-    return 0
-  fi
+  # 确保目录存在
+  mkdir -p "$cred_dir"
   
-  # 验证证书是否有效
+  # 每次都强制登录
+  warn "需要登录 Cloudflare（请准备浏览器）"
+  "${CLOUDFLARED_BIN}" tunnel login
+  [[ -s "$cert" ]] || die "未生成 cert.pem，login 可能未完成"
+  
+  # 验证登录是否成功
   if "${CLOUDFLARED_BIN}" tunnel list >/dev/null 2>&1; then
-    ok "cloudflared 已认证且有效：$cert"
-    export CLOUDFLARE_AUTH_CHECKED=1
-    return 0
+    ok "认证完成：$cert"
+  else
+    die "认证失败，请检查是否有权限访问该账户"
   fi
-  
-  # 证书无效，需要重新登录
-  warn "证书已失效，需要重新登录"
-  rm -f "$cert"
-  do_login "$cert" "$cred_dir"
-  export CLOUDFLARE_AUTH_CHECKED=1
 }
 
 do_login() {
