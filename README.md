@@ -2,7 +2,7 @@
 
 🚀 **企业级 Cloudflare Tunnel + Xray 代理解决方案**
 
-通过 Cloudflare 全球边缘网络，为您的服务提供安全、高速的访问通道。支持 VLESS/VMess 协议，具备智能路由、自动故障转移和零配置部署特性。
+ArgoTunnel Pro 是一个基于 Cloudflare Tunnel 和 Xray 的高性能代理解决方案，专为需要安全、稳定、高速网络访问的企业和开发者设计。通过 Cloudflare 全球边缘网络，为您的服务提供安全、高速的访问通道，支持 VLESS/VMess 协议，具备智能路由、自动故障转移和零配置部署特性。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Shell Script](https://img.shields.io/badge/Shell-Bash-green.svg)](https://www.gnu.org/software/bash/)
