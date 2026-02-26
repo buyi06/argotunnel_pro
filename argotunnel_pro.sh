@@ -326,15 +326,33 @@ EOF
 ensure_cloudflared_login() {
   # locally-managed tunnel 需要 cert.pem。Cloudflare 默认路径 ~/.cloudflared/cert.pem
   local cert="${HOME}/.cloudflared/cert.pem"
-  if [[ -s "$cert" ]]; then
-    ok "已存在 cloudflared 认证证书：$cert"
+  local cred_dir="${HOME}/.cloudflared"
+  
+  # 检查认证是否有效（尝试列出 tunnels）
+  if [[ -s "$cert" ]] && "${CLOUDFLARED_BIN}" tunnel list >/dev/null 2>&1; then
+    ok "cloudflared 已认证且有效：$cert"
     return 0
   fi
 
-  warn "未找到 $cert，将执行 cloudflared tunnel login（需要浏览器授权）"
+  # 如果有旧认证但无效，先清理
+  if [[ -s "$cert" ]]; then
+    warn "检测到旧认证但已失效，将重新登录"
+    rm -f "$cert"
+  fi
+
+  # 确保目录存在
+  mkdir -p "$cred_dir"
+  
+  warn "需要登录 Cloudflare（请准备浏览器）"
   "${CLOUDFLARED_BIN}" tunnel login
   [[ -s "$cert" ]] || die "未生成 cert.pem，login 可能未完成"
-  ok "认证完成：$cert"
+  
+  # 验证登录是否成功
+  if "${CLOUDFLARED_BIN}" tunnel list >/dev/null 2>&1; then
+    ok "认证完成：$cert"
+  else
+    die "认证失败，请检查是否有权限访问该账户"
+  fi
 }
 
 prompt_if_empty() {
