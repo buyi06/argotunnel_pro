@@ -1,227 +1,311 @@
 # ArgoTunnel Pro
 
-一键部署 Cloudflare Tunnel + Xray 代理服务，支持 VLESS/VMess 协议。
+🚀 **企业级 Cloudflare Tunnel + Xray 代理解决方案**
 
-## 特性
+通过 Cloudflare 全球边缘网络，为您的服务提供安全、高速的访问通道。支持 VLESS/VMess 协议，具备智能路由、自动故障转移和零配置部署特性。
 
-- ✅ **一键安装**：全自动安装 cloudflared 和 xray
-- ✅ **多协议支持**：VLESS、VMess
-- ✅ **智能 IP 优选**：自动选择最优 CF 边缘 IP
-- ✅ **Systemd 管理**：服务开机自启，日志清晰
-- ✅ **错误恢复**：严格错误处理，失败有提示
-- ✅ **多系统支持**：Ubuntu、CentOS、Debian、Arch 等
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Shell Script](https://img.shields.io/badge/Shell-Bash-green.svg)](https://www.gnu.org/software/bash/)
+[![Systemd](https://img.shields.io/badge/Systemd-enabled-blue.svg)](https://systemd.io/)
 
-## 快速开始
+## ✨ 核心特性
 
-### 1. 下载脚本
+### 🎯 **一键部署**
+- 零依赖安装，自动处理所有配置
+- 智能环境检测，支持主流 Linux 发行版
+- 内置交互式菜单，操作直观便捷
+
+### 🔒 **安全优先**
+- TLS 1.3 端到端加密
+- 自动 UUID 生成，避免密钥冲突
+- Systemd 沙箱隔离，最小权限原则
+
+### 🌐 **全球加速**
+- Cloudflare Anycast 网络，200+ 边缘节点
+- 智能路由选择，自动优选延迟最低的节点
+- 支持 IPv4/IPv6 双栈网络
+
+### 📊 **企业级运维**
+- Systemd 原生集成，开机自启动
+- 实时日志监控，故障快速定位
+- 一键健康检查，服务状态了然于心
+
+## 🚀 快速开始
+
+### 1. 环境准备
+
+**系统要求：**
+- ✅ systemd (Linux 发行版标准配置)
+- ✅ curl, unzip, ca-certificates (脚本自动安装)
+- ✅ root 权限
+
+**支持平台：**
+| 系统 | 架构 | 状态 |
+|------|------|------|
+| Ubuntu | 20.04+ | ✅ 完全支持 |
+| Debian | 11+ | ✅ 完全支持 |
+| CentOS | 8+ | ✅ 完全支持 |
+| RHEL | 9+ | ✅ 完全支持 |
+| Arch Linux | - | ✅ 完全支持 |
+| openSUSE | 15+ | ✅ 完全支持 |
+
+### 2. 部署服务
 
 ```bash
+# 下载脚本
 curl -fsSL https://raw.githubusercontent.com/buyi06/argotunnel_pro/main/argotunnel_pro.sh -o argotunnel_pro.sh
 chmod +x argotunnel_pro.sh
-```
 
-### 2. 一键安装
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/buyi06/argotunnel_pro/main/argotunnel_pro.sh -o argotunnel_pro.sh
-sudo chmod +x argotunnel_pro.sh
+# 启动交互式菜单
 sudo ./argotunnel_pro.sh
 ```
 
-### 2. 运行脚本（交互式菜单）
+### 3. 配置向导
+
+脚本将引导您完成：
+1. **域名配置** - 输入已托管到 Cloudflare 的域名
+2. **协议选择** - VLESS（推荐）或 VMess
+3. **网络优化** - 自动选择最优连接参数
+4. **服务部署** - 自动创建并启动所有必要服务
+
+## ⚙️ 高级配置
+
+### 环境变量
+
+通过环境变量实现自动化部署：
 
 ```bash
-sudo ./argotunnel_pro.sh
-```
-
-脚本会显示管理菜单，选择对应操作：
-- 1 - 安装/重装服务
-- 2 - 查看服务状态
-- 3 - 查看节点链接
-- 4 - 卸载服务
-- 5 - 退出
-
-### 3. 直接命令（无菜单）
-
-```bash
-sudo ./argotunnel_pro.sh install   # 安装
-sudo ./argotunnel_pro.sh status    # 查看状态
-sudo ./argotunnel_pro.sh links     # 查看链接
-sudo ./argotunnel_pro.sh uninstall # 卸载
-```
-
-### 4. 在线执行
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/buyi06/argotunnel_pro/main/argotunnel_pro.sh)
-```
-
-### 3. 获取配置
-
-安装完成后，配置信息保存在：
-- `/opt/argotunnel/etc/client.json` - 客户端配置
-- `/opt/argotunnel/out/` - 导出的配置文件
-
-## 环境变量配置
-
-可以通过环境变量预配置参数：
-
-```bash
-export DOMAIN="your-domain.com"
+export DOMAIN="tunnel.example.com"
 export XRAY_PROTOCOL="vless"
-export TUNNEL_NAME="mytunnel"
+export TUNNEL_NAME="prod-tunnel"
 export EDGE_IP_VERSION="4"
 export CF_PROTOCOL="quic"
+export NO_COLOR="1"
 
-sudo ./argotunnel_pro.sh
+sudo ./argotunnel_pro.sh install
 ```
 
-### 支持的环境变量
+### 配置矩阵
 
-| 变量 | 默认值 | 说明 |
-|------|--------|------|
-| `DOMAIN` | - | 必填，你的域名 |
-| `XRAY_PROTOCOL` | `vless` | 协议：`vmess` 或 `vless` |
-| `TUNNEL_NAME` | 从域名生成 | Tunnel 名称 |
-| `EDGE_IP_VERSION` | `auto` | CF 边缘 IP 版本：`auto`/`4`/`6` |
-| `CF_PROTOCOL` | `auto` | CF 连接协议：`auto`/`quic`/`http2` |
-| `NO_COLOR` | `0` | 禁用颜色输出：`0`/`1` |
+| 变量 | 默认值 | 可选值 | 说明 |
+|------|--------|--------|------|
+| `DOMAIN` | - | - | **必填** - 您的域名 |
+| `XRAY_PROTOCOL` | `vless` | `vmess` | 代理协议选择 |
+| `TUNNEL_NAME` | `${DOMAIN%%.*}` | - | Tunnel 实例名称 |
+| `EDGE_IP_VERSION` | `auto` | `4`/`6` | CF 边缘 IP 版本 |
+| `CF_PROTOCOL` | `auto` | `quic`/`http2` | CF 传输协议 |
+| `NO_COLOR` | `0` | `1` | 禁用彩色输出 |
 
-## 系统要求
-
-- **必须**：systemd（用于服务管理）
-- **依赖**：curl、unzip、ca-certificates
-- **权限**：root 权限
-
-## 支持的系统
-
-| 系统 | 包管理器 | 状态 |
-|------|----------|------|
-| Ubuntu/Debian | apt | ✅ 完全支持 |
-| CentOS/RHEL | yum/dnf | ✅ 完全支持 |
-| Arch Linux | pacman | ✅ 完全支持 |
-| Alpine | apk | ✅ 完全支持 |
-| openSUSE | zypper | ✅ 完全支持 |
-
-## 命令行选项
+### 命令行接口
 
 ```bash
-sudo ./argotunnel_pro.sh [命令]
+# 完整命令列表
+sudo ./argotunnel_pro.sh install    # 安装/重装
+sudo ./argotunnel_pro.sh status     # 服务状态
+sudo ./argotunnel_pro.sh links      # 获取节点
+sudo ./argotunnel_pro.sh uninstall  # 卸载服务
+sudo ./argotunnel_pro.sh menu       # 交互菜单
+sudo ./argotunnel_pro.sh help       # 帮助信息
 ```
 
-### 可用命令
-
-- `install` - 安装/重装服务
-- `status` - 查看服务状态
-- `links` - 查看节点链接
-- `uninstall` - 卸载服务
-- `menu` - 显示交互式菜单（默认）
-- `help` - 显示帮助信息
-
-### 主要功能
-
-- **安装**：完整安装并配置服务
-- **卸载**：清理所有相关文件和服务
-- **状态查看**：实时查看服务运行状态
-- **链接管理**：获取和查看客户端配置
-
-### 查看状态
-
-```bash
-# 查看服务状态
-sudo systemctl status argotunnel-cloudflared
-sudo systemctl status argotunnel-xray
-
-# 查看日志
-sudo journalctl -u argotunnel-cloudflared -f
-sudo journalctl -u argotunnel-xray -f
-```
-
-## 目录结构
+## 📁 目录结构
 
 ```
 /opt/argotunnel/
-├── bin/
-│   ├── cloudflared    # Cloudflare Tunnel 二进制
-│   └── xray          # Xray 代理二进制
-├── etc/
-│   ├── config.yaml   # Cloudflare Tunnel 配置
-│   ├── xray.json     # Xray 配置
-│   └── client.json   # 客户端配置（供参考）
-├── out/
-│   ├── vless.json    # VLESS 客户端配置
-│   └── vmess.json    # VMess 客户端配置
-└── var/
-    └── tunnel.json   # Tunnel 信息备份
+├── 📂 bin/                    # 可执行文件
+│   ├── cloudflared           # CF Tunnel 客户端
+│   └── xray                  # Xray 代理核心
+├── 📂 etc/                   # 配置文件
+│   ├── cloudflared.yml       # Tunnel 配置
+│   ├── xray.json            # Xray 服务配置
+│   └── client.json          # 客户端参考配置
+├── 📂 out/                   # 导出文件
+│   ├── links.txt            # 节点链接
+│   ├── vless.json           # VLESS 客户端配置
+│   └── vmess.json           # VMess 客户端配置
+└── 📂 var/                   # 运行时数据
+    └── tunnel.json          # Tunnel 信息备份
 ```
 
-## 故障排除
+## 🔧 运维管理
 
-### 常见问题
-
-1. **域名未解析**
-   - 确保域名已托管到 Cloudflare
-   - DNS 记录已正确配置
-
-2. **服务启动失败**
-   ```bash
-   # 查看详细错误日志
-   sudo journalctl -u argotunnel-cloudflared -u argotunnel-xray --no-pager -n 200
-   ```
-
-3. **连接不稳定**
-   - 尝试设置 `EDGE_IP_VERSION=4` 强制使用 IPv4
-   - 尝试设置 `CF_PROTOCOL=quic` 使用 QUIC 协议
-
-4. **Tunnel 创建失败**
-   - 检查 Cloudflare 账户权限
-   - 确保没有同名 tunnel
-
-### 手动干预
-
-如果自动配置失败，可以手动修改配置：
+### 服务监控
 
 ```bash
-# 编辑 tunnel 配置
-sudo nano /opt/argotunnel/etc/config.yaml
+# 实时状态监控
+sudo systemctl status argotunnel-cloudflared
+sudo systemctl status argotunnel-xray
 
-# 编辑 xray 配置
-sudo nano /opt/argotunnel/etc/xray.json
+# 日志追踪
+sudo journalctl -u argotunnel-cloudflared -f
+sudo journalctl -u argotunnel-xray -f
 
+# 性能统计
+sudo journalctl -u argotunnel-cloudflared --since "1 hour ago" | grep -E "connected|disconnected"
+```
+
+### 健康检查
+
+```bash
+# 检查服务状态
+sudo ./argotunnel_pro.sh status
+
+# 验证节点可用性
+curl -I https://your-domain.com
+
+# 查看实时连接
+sudo ss -tulpn | grep -E "127.0.0.1:|:443"
+```
+
+### 故障恢复
+
+```bash
 # 重启服务
 sudo systemctl restart argotunnel-cloudflared
 sudo systemctl restart argotunnel-xray
+
+# 清理并重装
+sudo ./argotunnel_pro.sh uninstall
+sudo ./argotunnel_pro.sh install
+
+# 查看详细错误日志
+sudo journalctl -u argotunnel-cloudflared -u argotunnel-xray --no-pager -n 100
 ```
 
-## 安全建议
+## 🔒 安全最佳实践
 
-1. **定期更新**
-   ```bash
-   sudo ./argotunnel_pro.sh
-   ```
+### 1. 访问控制
+- 使用强密码和随机 UUID
+- 定期轮换访问凭证
+- 启用 Cloudflare Access（可选）
 
-2. **使用强密码**
-   - Xray 默认生成随机 UUID，确保其随机性
+### 2. 网络安全
+- 配置 Cloudflare WAF 规则
+- 启用 DDoS 保护
+- 限制源地区访问
 
-3. **监控日志**
-   - 定期检查异常访问日志
+### 3. 监控告警
+```bash
+# 设置日志监控
+sudo journalctl -u argotunnel-* -f --grep="error\|failed\|timeout"
 
-## 开发
+# 创建监控脚本
+cat > /root/monitor.sh << 'EOF'
+#!/bin/bash
+if ! systemctl is-active --quiet argotunnel-cloudflared; then
+  echo "ArgoTunnel service is down!" | mail -s "Alert" admin@example.com
+fi
+EOF
+```
 
-### 脚本结构
+## 🚨 故障排除
 
-- **严格模式**：`set -Eeuo pipefail` 确保错误立即退出
-- **错误处理**：`trap on_err ERR` 捕获错误并提示
-- **模块化设计**：功能分离，易于维护
+### 常见问题
 
-### 贡献
+| 问题 | 原因 | 解决方案 |
+|------|------|----------|
+| 域名无法解析 | DNS 未配置 | 检查 Cloudflare DNS 设置 |
+| 连接被拒绝 | 服务未启动 | `sudo systemctl restart argotunnel-*` |
+| 认证失败 | Token 过期 | 重新执行 `cloudflared tunnel login` |
+| 端口冲突 | 随机端口重复 | 脚本自动处理，无需手动干预 |
 
-欢迎提交 Issue 和 Pull Request！
+### 调试模式
 
-## 许可证
+```bash
+# 启用详细日志
+export NO_COLOR=1
+sudo bash -x ./argotunnel_pro.sh install
 
-MIT License
+# 查看 Cloudflare 连接状态
+cloudflared tunnel list
+cloudflared tunnel route dns list
+```
 
-## 支持
+## 🎯 性能优化
 
-如有问题，请提交 [GitHub Issue](https://github.com/buyi06/argotunnel_pro/issues)。
+### 网络优化
+```bash
+# 强制 IPv4（解决双栈问题）
+export EDGE_IP_VERSION="4"
+
+# 使用 QUIC 协议（降低延迟）
+export CF_PROTOCOL="quic"
+```
+
+### 系统调优
+```bash
+# 增加文件描述符限制
+echo "* soft nofile 65535" >> /etc/security/limits.conf
+echo "* hard nofile 65535" >> /etc/security/limits.conf
+
+# 优化内核参数
+sysctl -w net.core.rmem_max=134217728
+sysctl -w net.core.wmem_max=134217728
+```
+
+## 🌟 高级特性
+
+### 多实例部署
+```bash
+# 部署多个 Tunnel 实例
+export DOMAIN="tunnel1.example.com"
+sudo ./argotunnel_pro.sh install
+
+export DOMAIN="tunnel2.example.com"
+sudo ./argotunnel_pro.sh install
+```
+
+### 自动化集成
+```bash
+# CI/CD 集成示例
+cat > deploy-tunnel.sh << 'EOF'
+#!/bin/bash
+set -euo pipefail
+
+DOMAIN="${1:-tunnel.example.com}"
+export DOMAIN="$DOMAIN"
+export XRAY_PROTOCOL="vless"
+export NO_COLOR="1"
+
+curl -fsSL https://raw.githubusercontent.com/buyi06/argotunnel_pro/main/argotunnel_pro.sh | sudo bash
+EOF
+```
+
+## 🤝 贡献指南
+
+我们欢迎所有形式的贡献！
+
+### 提交 Issue
+- 使用 Issue 模板
+- 提供详细的错误日志
+- 包含系统环境信息
+
+### 提交 PR
+1. Fork 本仓库
+2. 创建特性分支：`git checkout -b feature/amazing-feature`
+3. 提交更改：`git commit -m 'Add amazing feature'`
+4. 推送分支：`git push origin feature/amazing-feature`
+5. 创建 Pull Request
+
+## 📄 许可证
+
+本项目采用 [MIT 许可证](LICENSE)。
+
+## 🙏 致谢
+
+- [Cloudflare](https://cloudflare.com/) - 提供全球边缘网络
+- [Xray](https://github.com/XTLS/Xray-core) - 高性能代理核心
+- [Systemd](https://systemd.io/) - Linux 服务管理框架
+
+## 📞 支持
+
+- 📧 [GitHub Issues](https://github.com/buyi06/argotunnel_pro/issues) - 问题反馈
+- 💬 [Discussions](https://github.com/buyi06/argotunnel_pro/discussions) - 社区交流
+- 📖 [Wiki](https://github.com/buyi06/argotunnel_pro/wiki) - 详细文档
+
+---
+
+<div align="center">
+  <p>🌟 如果这个项目对您有帮助，请给我们一个 Star！</p>
+  <p>Made with ❤️ by ArgoTunnel Pro Team</p>
+</div>
