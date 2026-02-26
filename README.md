@@ -23,8 +23,10 @@ chmod +x argotunnel_pro.sh
 ### 2. 一键安装
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/buyi06/argotunnel_pro/main/argotunnel_pro.sh | sudo bash
+DOMAIN=your-domain.com curl -fsSL https://raw.githubusercontent.com/buyi06/argotunnel_pro/main/argotunnel_pro.sh | sudo bash
 ```
+
+**重要**：必须设置 `DOMAIN` 环境变量，否则无法交互输入。
 
 脚本会引导你：
 - 设置域名（必须有）
