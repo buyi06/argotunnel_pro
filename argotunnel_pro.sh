@@ -328,22 +328,42 @@ ensure_cloudflared_login() {
   local cert="${HOME}/.cloudflared/cert.pem"
   local cred_dir="${HOME}/.cloudflared"
   
-  # 检查认证是否有效（尝试列出 tunnels）
-  if [[ -s "$cert" ]] && "${CLOUDFLARED_BIN}" tunnel list >/dev/null 2>&1; then
-    ok "cloudflared 已认证且有效：$cert"
+  # 检查证书文件是否存在
+  if [[ ! -s "$cert" ]]; then
+    warn "未找到认证证书：$cert"
+    warn "需要登录 Cloudflare（请准备浏览器）"
+    do_login "$cert" "$cred_dir"
     return 0
   fi
+  
+  # 验证证书是否有效（增加重试机制）
+  local retry=0
+  local max_retry=3
+  while [[ $retry -lt $max_retry ]]; do
+    if "${CLOUDFLARED_BIN}" tunnel list >/dev/null 2>&1; then
+      ok "cloudflared 已认证且有效：$cert"
+      return 0
+    fi
+    
+    warn "认证验证失败（尝试 $((retry + 1))/$max_retry）"
+    ((retry++))
+    sleep 1
+  done
+  
+  # 多次验证失败，可能是网络问题或证书真的失效
+  warn "认证验证失败，尝试重新登录..."
+  rm -f "$cert"
+  do_login "$cert" "$cred_dir"
+}
 
-  # 如果有旧认证但无效，先清理
-  if [[ -s "$cert" ]]; then
-    warn "检测到旧认证但已失效，将重新登录"
-    rm -f "$cert"
-  fi
-
+do_login() {
+  local cert="$1"
+  local cred_dir="$2"
+  
   # 确保目录存在
   mkdir -p "$cred_dir"
   
-  warn "需要登录 Cloudflare（请准备浏览器）"
+  # 执行登录
   "${CLOUDFLARED_BIN}" tunnel login
   [[ -s "$cert" ]] || die "未生成 cert.pem，login 可能未完成"
   
