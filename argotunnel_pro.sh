@@ -493,11 +493,11 @@ write_links() {
   if [[ "$XRAY_PROTOCOL" == "vmess" ]]; then
     local j
     j=$(printf '{"add":"%s","aid":"0","host":"%s","id":"%s","net":"ws","path":"/%s","port":"443","ps":"%s","tls":"tls","type":"none","v":"2"}' \
-      "visa.com" "$domain" "$uuid" "$path" "$ps")
+      "$domain" "$domain" "$uuid" "$path" "$ps")
     printf 'vmess://%s\n' "$(printf '%s' "$j" | b64_nw0)" >> "$out"
   else
     printf 'vless://%s@%s:443?encryption=none&security=tls&type=ws&host=%s&path=/%s#%s\n' \
-      "$uuid" "visa.com" "$domain" "$path" "$ps_enc" >> "$out"
+      "$uuid" "$domain" "$domain" "$path" "$ps_enc" >> "$out"
   fi
 
   ok "链接已生成：$out（备注名/host/优选 IP 可自行替换）"
